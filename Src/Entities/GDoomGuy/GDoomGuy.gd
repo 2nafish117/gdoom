@@ -14,6 +14,11 @@ var floor_contact_indices := []
 var wall_contact_indices := []
 
 func on_used_jump_pad(direction: Vector3, force: float):
+	if $Dash.dash_state == $Dash.Dashing or $Dash.dash_state == $Dash.StopDashing:
+		$Dash.dash_state = $Dash.NotDashing
+		gravity_scale = $Dash.gravity_scale
+		linear_velocity = Vector3.ZERO
+		pass
 	linear_velocity = linear_velocity - linear_velocity.project(direction)
 	apply_central_impulse(force * direction)
 

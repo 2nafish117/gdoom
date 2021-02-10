@@ -17,7 +17,7 @@ var dash_state: int = NotDashing
 var dash_count := max_dash_count
 var gravity_scale: float
 
-func get_dash_state():
+func get_dash_state_string():
 	return to_string[dash_state]
 
 func apply_movement(player: RigidBody):
@@ -41,7 +41,7 @@ func apply_movement(player: RigidBody):
 			velocity = direction * speed_dash + Vector3.UP * 0.2
 		Dashing:
 			# TODO: what if i hit a jumppad or launchpad?
-			# ans: stop dashing immediately
+			# ans: stop dashing immediately and do the jumppad
 			if time - dash_time >= time_dash_duration or velocity.y > 2.0:
 				dash_state = StopDashing
 		StopDashing:
