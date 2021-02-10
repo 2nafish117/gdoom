@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Src/Entities/GDoomGuy/PlayerInput.gd" type="Script" id=1]
 [ext_resource path="res://Src/Entities/GDoomGuy/Movement.gd" type="Script" id=2]
@@ -14,7 +14,11 @@ friction = 0.0
 radius = 0.3
 height = 1.3
 
-[sub_resource type="CylinderShape" id=3]
+[sub_resource type="CapsuleShape" id=3]
+radius = 0.2
+height = 0.2
+
+[sub_resource type="CylinderShape" id=4]
 radius = 0.25
 height = 0.350669
 
@@ -27,11 +31,17 @@ custom_integrator = true
 continuous_cd = true
 contacts_reported = 4
 can_sleep = false
+axis_lock_angular_x = true
+axis_lock_angular_z = true
 script = ExtResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
 shape = SubResource( 2 )
+
+[node name="GroundTouchCollision" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, -0.6595, 0 )
+shape = SubResource( 3 )
 
 [node name="PlayerInput" type="Node" parent="."]
 script = ExtResource( 1 )
@@ -43,7 +53,7 @@ script = ExtResource( 2 )
 
 [node name="CollisionShape" type="CollisionShape" parent="FloorInProximityArea"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.990199, 0 )
-shape = SubResource( 3 )
+shape = SubResource( 4 )
 
 [node name="Dash" type="Node" parent="."]
 script = ExtResource( 5 )

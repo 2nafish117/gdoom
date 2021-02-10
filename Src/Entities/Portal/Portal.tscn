@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Src/Entities/Portal/Portal.gd" type="Script" id=1]
+[ext_resource path="res://addons/SIsilicon.3d.text/label_3d.gd" type="Script" id=2]
+
+[sub_resource type="CylinderShape" id=1]
+height = 0.5
+
+[sub_resource type="CylinderMesh" id=2]
+height = 0.1
+
+[node name="Portal" type="Area"]
+script = ExtResource( 1 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
+shape = SubResource( 1 )
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
+mesh = SubResource( 2 )
+material/0 = null
+
+[node name="Label3D" type="Spatial" parent="."]
+transform = Transform( -1, 0, -8.9407e-08, 0, 1, 0, 8.9407e-08, 0, -1, 0, 0, -0.0935533 )
+script = ExtResource( 2 )
+text = "portal"
+text_size = 0.2
+font = null
+align = 0
+color = Color( 0, 0, 0, 1 )
+metallic = 0.0
+roughness = 0.5
+emission_color = Color( 1, 1, 1, 1 )
+emission_strength = 0.0
+extrude = 0.0
+max_steps = 256
+step_size = 1.0
+[connection signal="body_entered" from="." to="." method="_on_Portal_body_entered"]

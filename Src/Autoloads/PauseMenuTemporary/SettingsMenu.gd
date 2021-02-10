@@ -36,8 +36,3 @@ func _on_OptionButton_item_selected(index: int) -> void:
 func _on_CheckBox_toggled(button_pressed: bool) -> void:
 	OS.window_fullscreen = button_pressed
 
-# set mouse sens 
-func _on_SpinBox_value_changed(value: float) -> void:
-	ProjectSettings.set("control_settings/mouse_vertical_sensitivity", value)
-	ProjectSettings.set("control_settings/mouse_horizontal_sensitivity", value)
-	print(ProjectSettings.get("control_settings/mouse_horizontal_sensitivity"))

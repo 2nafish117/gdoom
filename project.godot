@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Reference",
+"class": "ArrayUtils",
+"language": "GDScript",
+"path": "res://addons/SIsilicon.3d.text/array_utils.gd"
+}, {
 "base": "Position3D",
 "class": "DbgCameraController",
 "language": "GDScript",
@@ -25,6 +30,7 @@ _global_script_classes=[ {
 "path": "res://Src/Core/Interpolation/Interpolation3D.gd"
 } ]
 _global_script_class_icons={
+"ArrayUtils": "",
 "DbgCameraController": "",
 "Interpolation2D": "",
 "Interpolation3D": ""
@@ -48,6 +54,10 @@ InputManager="*res://Src/Autoloads/InputManager.gd"
 window/size/width=1920
 window/size/height=1080
 window/stretch/aspect="keep_width"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "SIsilicon.3d.text" )
 
 [input]
 

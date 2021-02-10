@@ -13,6 +13,32 @@ var physics_state: PhysicsDirectBodyState
 var floor_contact_indices := []
 var wall_contact_indices := []
 
+func on_used_jump_pad(direction: Vector3, force: float):
+	linear_velocity = linear_velocity - linear_velocity.project(direction)
+	apply_central_impulse(force * direction)
+
+# override parent definition
+func set_global_transform(xform: Transform) -> void:
+	# print("calling ovveride")
+	mode = RigidBody.MODE_KINEMATIC
+	$Interpolation3D.forget_previous_transforms()
+	global_transform = xform
+	linear_velocity = Vector3.ZERO
+	player_input.movement = Vector3.ZERO
+	mode = RigidBody.MODE_CHARACTER
+
+func set_global_position(pos: Vector3) -> void:
+	mode = RigidBody.MODE_KINEMATIC
+	$Interpolation3D.forget_previous_transforms()
+	global_transform.origin = pos
+	mode = RigidBody.MODE_CHARACTER
+	
+func set_global_basis(basis: Basis) -> void:
+	mode = RigidBody.MODE_KINEMATIC
+	$Interpolation3D.forget_previous_transforms()
+	global_transform.basis = basis
+	mode = RigidBody.MODE_CHARACTER
+
 func get_speed() -> float:
 	return linear_velocity.length()
 
@@ -63,6 +89,13 @@ func get_best_wall_index() -> int:
 		if physics_state.get_contact_local_normal(idx).y < physics_state.get_contact_local_normal(wall_index).y:
 			wall_index = idx
 	return wall_index
+
+func _ready() -> void:
+	Dbg.stats.add_stat("hspeed", self, "get_hspeed", true)
+	Dbg.stats.add_stat("vspeed", self, "get_vspeed", true)
+	Dbg.stats.add_stat("speed", self, "get_speed", true)
+	Dbg.draw.add_vector3d(self, "linear_velocity", false, 0.05, 4, Color(0,1,0, 0.5))
+	pass
 
 func _integrate_forces(state: PhysicsDirectBodyState) -> void:
 	physics_state = state

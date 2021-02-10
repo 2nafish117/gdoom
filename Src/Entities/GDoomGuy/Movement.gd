@@ -9,7 +9,7 @@ export(float) var friction_air := 0.0
 export(float) var speed_ground := 6.0
 export(float) var speed_stop := 1.0
 export(float) var speed_air := 6.0
-export(float) var speed_jump := 6.0
+export(float) var speed_jump := 4.0
 export(int) var air_jump_count := 1
 export(float) var time_jump_cooldown := 0.2
 
