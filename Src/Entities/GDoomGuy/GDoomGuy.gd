@@ -22,27 +22,28 @@ func on_used_jump_pad(direction: Vector3, force: float):
 	linear_velocity = linear_velocity - linear_velocity.project(direction)
 	apply_central_impulse(force * direction)
 
+func set_global_origin(origin: Vector3) -> void:
+	mode = RigidBody.MODE_KINEMATIC
+	$Interpolation3D.forget_previous_transforms()
+	global_transform.origin = origin
+	mode = RigidBody.MODE_CHARACTER
+
+func set_global_basis(basis: Basis) -> void:
+	mode = RigidBody.MODE_KINEMATIC
+	$Interpolation3D.forget_previous_transforms()
+	global_transform.basis = basis
+	mode = RigidBody.MODE_CHARACTER
+
 # override parent definition
 func set_global_transform(xform: Transform) -> void:
 	# print("calling ovveride")
 	mode = RigidBody.MODE_KINEMATIC
 	$Interpolation3D.forget_previous_transforms()
 	global_transform = xform
-	linear_velocity = Vector3.ZERO
-	player_input.movement = Vector3.ZERO
 	mode = RigidBody.MODE_CHARACTER
 
-func set_global_position(pos: Vector3) -> void:
-	mode = RigidBody.MODE_KINEMATIC
-	$Interpolation3D.forget_previous_transforms()
-	global_transform.origin = pos
-	mode = RigidBody.MODE_CHARACTER
-	
-func set_global_basis(basis: Basis) -> void:
-	mode = RigidBody.MODE_KINEMATIC
-	$Interpolation3D.forget_previous_transforms()
-	global_transform.basis = basis
-	mode = RigidBody.MODE_CHARACTER
+func set_camera_global_basis(basis: Basis) -> void:
+	camera.set_camera_global_basis(basis)
 
 func get_speed() -> float:
 	return linear_velocity.length()
@@ -55,6 +56,8 @@ func get_vspeed() -> float:
 
 func get_move_direction() -> Vector3:
 	var camera_hrot := camera.get_hrot() as float
+	# also rotate the stair detection rig
+	$StairDetection.global_transform.basis = camera.get_hbasis()
 	return player_input.movement.rotated(Vector3.UP, camera_hrot)
 
 func get_look_direction() -> Vector3:

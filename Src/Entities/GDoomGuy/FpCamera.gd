@@ -23,11 +23,17 @@ func get_basis() -> Basis:
 
 func get_hrot() -> float:
 	return $H.global_transform.basis.get_euler().y
-	# return $H.rotation.y
 
 func get_vrot() -> float:
 	return $H/V.global_transform.basis.get_euler().x
-	# return $H/V.rotation.x
+
+func set_camera_global_basis(basis: Basis) -> void:
+	# global_transform.basis = basis
+	# basis.get_rotation_quat()
+	# $H.rotation.y += basis.get_euler().y
+	# $H/V.rotation.x = 0.0
+	# TODO
+	pass
 
 func set_offset(val: Vector2):
 	prev_offset = offset

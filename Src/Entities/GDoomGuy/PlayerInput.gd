@@ -43,7 +43,7 @@ func update(delta: float):
 	else:
 		interact = 0.0
 	
-	dash = Input.is_action_just_pressed("action_dash")
+	dash = Input.is_action_pressed("action_dash")
 	
 	fire_primary_just_pressed = Input.is_action_just_pressed("fire_primary")
 	fire_primary_pressed = Input.is_action_pressed("fire_primary")

@@ -29,5 +29,6 @@ func _on_Portal_body_entered(body: Node) -> void:
 	if body.is_in_group("portalable") and destination != null:
 		var xform: Transform
 		xform.origin = destination.global_transform.origin - destination.global_transform.basis.z * destination_offset
-		xform.basis = destination.transform.basis
-		body.set_global_transform(xform)
+		xform.basis = destination.global_transform.basis
+		body.set_global_origin(xform.origin)
+		body.set_camera_global_basis(xform.basis)

@@ -1,7 +1,7 @@
 extends Node
 
 export(float) var time_dash_cooldown := 1.5
-export(float) var time_dash_duration := 0.2
+export(float) var time_dash_duration := 0.22
 export(float) var speed_dash := 20.0
 export(float) var fraction_speed_conserve_after_dash := 0.22
 export(int) var max_dash_count := 2
@@ -19,6 +19,9 @@ var gravity_scale: float
 
 func get_dash_state_string():
 	return to_string[dash_state]
+
+func _ready() -> void:
+	Dbg.stats.add_stat("dash count", self, "dash_count")
 
 func apply_movement(player: RigidBody):
 	var input = player.player_input
@@ -38,11 +41,12 @@ func apply_movement(player: RigidBody):
 			dash_count -= 1
 			gravity_scale = player.gravity_scale
 			player.gravity_scale = 0.0
+			# what if player is on stairs or uneven ground? what direction
 			velocity = direction * speed_dash + Vector3.UP * 0.2
 		Dashing:
 			# TODO: what if i hit a jumppad or launchpad?
 			# ans: stop dashing immediately and do the jumppad
-			if time - dash_time >= time_dash_duration or velocity.y > 2.0:
+			if time - dash_time >= time_dash_duration:
 				dash_state = StopDashing
 		StopDashing:
 			dash_state = NotDashing
@@ -51,9 +55,9 @@ func apply_movement(player: RigidBody):
 		NotDashing:
 			if input.movement.length_squared() > 0.01 and input.dash and dash_count > 0:
 				dash_state = StartDashing
-			if time - dash_recharge_time >= time_dash_cooldown:
+			if time - dash_recharge_time >= time_dash_cooldown and player.floor_in_contact():
 				dash_recharge_time = time
-				dash_count = int(clamp(dash_count + 1, 0, max_dash_count))
+				dash_count = max_dash_count
 	
 	physics_state.set_linear_velocity(velocity)
 	
