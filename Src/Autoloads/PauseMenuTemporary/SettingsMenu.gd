@@ -24,7 +24,7 @@ func _on_Back_pressed() -> void:
 #OS.vsync_enabled = settings.vsync
 
 # set resolution
-func _on_OptionButton_item_selected(index: int) -> void:
+func _on_OptionButton_item_selected(_index: int) -> void:
 	var text: String = resolution.get_node("OptionButton").text
 	var res := text.split_floats("x", false)
 	get_viewport().set_size(Vector2(res[0], res[1]))

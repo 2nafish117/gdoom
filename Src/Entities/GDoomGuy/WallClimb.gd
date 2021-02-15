@@ -20,7 +20,8 @@ func get_wall_climb_state_string():
 	return to_string[wall_climb_state]
 
 func _ready() -> void:
-	Dbg.stats.add_stat("wall_climb_state", self, "get_wall_climb_state_string", true)
+	# Dbg.stats.add_stat("wall_climb_state", self, "get_wall_climb_state_string", true)
+	pass
 
 func apply_movement(player: RigidBody):
 	var input = player.player_input

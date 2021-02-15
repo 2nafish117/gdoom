@@ -1,8 +1,7 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Src/Materials/Proto/ProtoGreen.tres" type="Material" id=1]
 [ext_resource path="res://Src/Entities/JumpPad/JumpPad.gd" type="Script" id=2]
-[ext_resource path="res://addons/SIsilicon.3d.text/label_3d.gd" type="Script" id=3]
 
 [sub_resource type="CylinderShape" id=1]
 radius = 0.75
@@ -50,20 +49,4 @@ material/0 = null
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0433568, 0 )
 mesh = SubResource( 4 )
 material/0 = null
-
-[node name="Label3D" type="Spatial" parent="."]
-transform = Transform( -1, -8.74228e-08, -3.82137e-15, 0, -4.37114e-08, 1, -8.74228e-08, 1, 4.37114e-08, 1.51161e-16, 0.10548, 4.61068e-09 )
-script = ExtResource( 3 )
-text = "jump pad"
-text_size = 0.2
-font = null
-align = 0
-color = Color( 0, 0, 0, 1 )
-metallic = 0.0
-roughness = 0.5
-emission_color = Color( 1, 1, 1, 1 )
-emission_strength = 0.0
-extrude = 0.0
-max_steps = 256
-step_size = 1.0
 [connection signal="body_entered" from="Area" to="." method="_on_Area_body_entered"]

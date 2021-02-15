@@ -21,7 +21,8 @@ func get_dash_state_string():
 	return to_string[dash_state]
 
 func _ready() -> void:
-	Dbg.stats.add_stat("dash count", self, "dash_count")
+	# Dbg.stats.add_stat("dash count", self, "dash_count")
+	pass
 
 func apply_movement(player: RigidBody):
 	var input = player.player_input
