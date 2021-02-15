@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Src/Entities/GDoomGuy/PlayerInput.gd" type="Script" id=1]
 [ext_resource path="res://Src/Entities/GDoomGuy/Movement.gd" type="Script" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://Src/Entities/GDoomGuy/FpCamera.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Src/Entities/GDoomGuy/Dash.gd" type="Script" id=5]
 [ext_resource path="res://Src/Core/Interpolation/Interpolation3D.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Src/Entities/GDoomGuy/WallClimb.gd" type="Script" id=7]
 
 [sub_resource type="PhysicsMaterial" id=1]
 friction = 0.0
@@ -84,6 +85,15 @@ material/0 = null
 
 [node name="Dash" type="Node" parent="."]
 script = ExtResource( 5 )
+
+[node name="WallClimb" type="Node" parent="."]
+script = ExtResource( 7 )
+
+[node name="WallClimbRayCast" type="RayCast" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0 )
+enabled = true
+cast_to = Vector3( 0, 0, -2.5 )
+collision_mask = 2
 
 [node name="FpCamera" parent="." instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0 )

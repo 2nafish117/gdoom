@@ -7,7 +7,7 @@ var movement: Vector3
 var jump: bool
 var queue_jump: bool
 var dash: bool
-var interact: float
+var interact: bool
 
 var fire_primary_just_pressed: bool
 var fire_primary_pressed: bool
@@ -37,12 +37,8 @@ func update(delta: float):
 	if time - jump_time > queue_jump_time:
 		queue_jump = false
 	
-	if Input.is_action_pressed("action_interact"):
-		interact += delta / interact_time
-		interact = clamp(interact, 0.0, 1.0)
-	else:
-		interact = 0.0
-	
+	# punch, blood punch, interact with keys switches levers
+	interact = Input.is_action_just_pressed("action_interact")
 	dash = Input.is_action_pressed("action_dash")
 	
 	fire_primary_just_pressed = Input.is_action_just_pressed("fire_primary")

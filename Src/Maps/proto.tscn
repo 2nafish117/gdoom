@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Src/Materials/Proto/ProtoDark.tres" type="Material" id=1]
 [ext_resource path="res://Src/Entities/GDoomGuy/GDoomGuy.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Src/Materials/Proto/ProtoRed.tres" type="Material" id=3]
 [ext_resource path="res://Src/Entities/Portal/Portal.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Src/Entities/JumpPad/JumpPad.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Src/Entities/WallClimb/WallClimb.tscn" type="PackedScene" id=6]
 
 [node name="Spatial" type="Spatial"]
 
@@ -60,3 +61,6 @@ destination_path = NodePath("../Portal")
 
 [node name="JumpPad" parent="level" instance=ExtResource( 5 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 0 )
+
+[node name="WallClimb" parent="level" instance=ExtResource( 6 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 8, 3, -8.71509 )

@@ -9,14 +9,30 @@ onready var cos_floor_angle := cos(deg2rad(floor_angle))
 onready var player_input := $PlayerInput
 onready var camera := $FpCamera
 
+# used by movement abilities
+onready var wall_climb_ray_cast := $WallClimbRayCast
+onready var stair_detection := $StairDetection
+
+# movement abilities
+onready var movement := get_node_or_null("Movement")
+onready var use_movement := movement != null
+onready var dash := get_node_or_null("Dash")
+onready var use_dash := dash != null
+onready var wall_climb := get_node_or_null("WallClimb")
+onready var use_wall_climb := wall_climb != null
+
+# used by the movement abilities
 var physics_state: PhysicsDirectBodyState
 var floor_contact_indices := []
 var wall_contact_indices := []
 
+# when dashing into a jump pad cancel the dash
 func on_used_jump_pad(direction: Vector3, force: float):
-	if $Dash.dash_state == $Dash.Dashing or $Dash.dash_state == $Dash.StopDashing:
-		$Dash.dash_state = $Dash.NotDashing
-		gravity_scale = $Dash.gravity_scale
+	if dash == null:
+		return
+	if dash.dash_state == dash.Dashing or dash.dash_state == dash.StopDashing:
+		dash.dash_state = dash.NotDashing
+		gravity_scale = dash.gravity_scale
 		linear_velocity = Vector3.ZERO
 		pass
 	linear_velocity = linear_velocity - linear_velocity.project(direction)
@@ -80,6 +96,7 @@ func update_contact_indices(state: PhysicsDirectBodyState):
 		elif abs_cos_theta >= 0.0 and abs_cos_theta < cos_floor_angle:
 			wall_contact_indices.append(idx)
 
+# used by movement abilities
 func get_best_floor_index() -> int:
 	if len(floor_contact_indices) == 0:
 		return -1
@@ -89,6 +106,7 @@ func get_best_floor_index() -> int:
 			floor_index = idx
 	return floor_index
 
+# used by movement abilities
 func get_best_wall_index() -> int:
 	if len(wall_contact_indices) == 0:
 		return -1
@@ -111,8 +129,13 @@ func _integrate_forces(state: PhysicsDirectBodyState) -> void:
 	player_input.update(delta)
 	update_contact_indices(state)
 	
-	$Movement.apply_movement(self)
-	$Dash.apply_movement(self)
+	if movement != null and use_movement:
+		movement.apply_movement(self)
+	if dash != null and use_dash:
+		dash.apply_movement(self)
+	if wall_climb != null and use_wall_climb:
+		wall_climb.apply_movement(self)
+	
 	# DO NOT WRITE MOVEMENT CODE BELOW THIS LINE!!!
 	# IT IS NEEDED TO INTERPOLATE THE FPCamera
 	# $Interpolation3D.copy_current_transform()
