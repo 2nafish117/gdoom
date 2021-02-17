@@ -1,14 +1,14 @@
 extends Node
 
-export(float) var accel_ground := 80.0
-export(float) var accel_air := 40.0 # 30.0
+export(float) var accel_ground := 100.0
+export(float) var accel_air := 100.0 # 30.0
 
 export(float) var friction_ground := 10.0
 export(float) var friction_air := 0.0
 
-export(float) var speed_ground := 6.0
+export(float) var speed_ground := 8.0
 export(float) var speed_stop := 1.0
-export(float) var speed_air := 6.0
+export(float) var speed_air := 8.0
 export(float) var speed_jump := 4.5
 export(int) var air_jump_count := 1
 export(float) var time_jump_cooldown := 0.2
@@ -36,7 +36,30 @@ var floor_contact: Vector3
 var floor_in_contact: bool
 var floor_in_proximity: int = 0
 
+func _ready() -> void:
+	Dbg.stats.add_stat("jump_count", self, "jump_count")
+
 func accelerate(direction: Vector3, velocity: Vector3, max_accel: float, max_speed: float, delta: float) -> Vector3:
+	var projection := velocity.length() #dot(direction)
+	var add_speed := max_speed - projection
+	add_speed = clamp(add_speed, 0.0, max_accel * delta)
+	
+	# this applies friction perpendicular to direction of movement, making controls feel like doom 2016 with air control
+	if direction != Vector3.ZERO:
+		var vel_along_direction := velocity.project(direction)
+		var vel_perp_direction := velocity - vel_along_direction
+		var speed_perp_direction := vel_perp_direction.length()
+		if speed_perp_direction != 0.0:
+			var control := max(1.0, speed_perp_direction * 0.9)
+			# var control := 0.2
+			var drop := control * 2.0 * delta
+			vel_perp_direction *= max(speed_perp_direction - drop, 0.0) / speed_perp_direction
+
+		velocity = vel_along_direction + vel_perp_direction
+	
+	return velocity + direction * add_speed
+
+func old_accelerate(direction: Vector3, velocity: Vector3, max_accel: float, max_speed: float, delta: float) -> Vector3:
 	var projection := velocity.dot(direction)
 	var add_speed := max_speed - projection
 	add_speed = clamp(add_speed, 0.0, max_accel * delta)
@@ -64,6 +87,10 @@ func friction(velocity: Vector3, friction: float, _speed_stop: float, delta: flo
 		var drop := control * friction * delta
 		velocity *= max(speed - drop, 0.0) / speed
 	return velocity
+
+func reset_jump() -> void:
+	jump_count = 0
+	pass
 
 func apply_movement(player: RigidBody):
 	var input = player.player_input
@@ -94,7 +121,6 @@ func apply_movement(player: RigidBody):
 		jump_count = 0
 		if input.queue_jump:
 			if time - jump_time >= time_jump_cooldown:
-				jump_count += 1
 				velocity.y = speed_jump_modifier * speed_jump
 				jump_time = time
 		else:
@@ -117,7 +143,7 @@ func apply_movement(player: RigidBody):
 		floor_velocity = physics_state.get_contact_collider_velocity_at_position(floor_index)
 		velocity += floor_velocity
 	else:
-		# velocity = friction(velocity, friction_air_modifier * friction_air, speed_stop, delta)
+		velocity = friction(velocity, friction_air_modifier * friction_air, 0.0, delta)
 		var vvel := velocity.project(Vector3.UP)
 		var hvel := velocity - vvel
 		hvel = accelerate(direction, hvel, accel_air_modifier * accel_air, speed_air_modifier * speed_air, delta)

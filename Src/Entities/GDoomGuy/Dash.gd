@@ -1,8 +1,8 @@
 extends Node
 
 export(float) var time_dash_cooldown := 1.5
-export(float) var time_dash_duration := 0.22
-export(float) var speed_dash := 20.0
+export(float) var time_dash_duration := 0.17
+export(float) var speed_dash := 30.0
 export(float) var fraction_speed_conserve_after_dash := 0.22
 export(int) var max_dash_count := 2
 
@@ -21,7 +21,8 @@ func get_dash_state_string():
 	return to_string[dash_state]
 
 func _ready() -> void:
-	# Dbg.stats.add_stat("dash count", self, "dash_count")
+	Dbg.stats.add_stat("dash_count", self, "dash_count")
+	Dbg.stats.add_stat("dash_state", self, "get_dash_state_string", true)
 	pass
 
 func apply_movement(player: RigidBody):

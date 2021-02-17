@@ -39,7 +39,10 @@ size = Vector3( 0.05, 0.05, 0.3 )
 [sub_resource type="SpatialMaterial" id=9]
 albedo_color = Color( 1, 0, 0, 1 )
 
-[node name="GDoomGuy" type="RigidBody"]
+[node name="GDoomGuy" type="RigidBody" groups=[
+"portalable",
+]]
+collision_mask = 3
 mode = 2
 mass = 150.0
 physics_material_override = SubResource( 1 )
@@ -57,7 +60,7 @@ transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0
 shape = SubResource( 2 )
 
 [node name="GroundTouchCollision" type="CollisionShape" parent="."]
-transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, -0.6595, 0 )
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, -0.652394, 0 )
 shape = SubResource( 3 )
 
 [node name="PlayerInput" type="Node" parent="."]
@@ -73,6 +76,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.990199, 0 )
 shape = SubResource( 4 )
 
 [node name="StairDetection" type="Spatial" parent="."]
+visible = false
 
 [node name="StairRayCast" type="RayCast" parent="StairDetection"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.649, -0.317961 )
@@ -88,12 +92,6 @@ script = ExtResource( 5 )
 
 [node name="WallClimb" type="Node" parent="."]
 script = ExtResource( 7 )
-
-[node name="WallClimbRayCast" type="RayCast" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0 )
-enabled = true
-cast_to = Vector3( 0, 0, -2.5 )
-collision_mask = 2
 
 [node name="FpCamera" parent="." instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0 )

@@ -2,6 +2,10 @@ extends Position3D
 
 const MOUSE_SENSITIVITY_FACTOR := 0.001
 
+enum { CamModeNormal, CamModeWallClimb }
+var camera_mode := CamModeNormal
+var wall_normal: Vector3
+
 onready var camera := $H/V/Camera
 onready var offset := Vector2.ZERO
 onready var prev_offset := Vector2.ZERO
@@ -14,6 +18,7 @@ var amplitude: Vector3 = Vector3(2.0, 2.0, 2.0)
 var trauma: float = 0.0
 var time := 0.0
 var shake: Vector3
+
 
 func get_hbasis() -> Basis:
 	return $H.global_transform.basis
@@ -90,11 +95,54 @@ func _process(delta: float) -> void:
 	# $H.rotate_y(offset.x)
 	# $H/V.rotate_x(offset.y)
 
+var k = 0.1 * PI
+var theta1 := 0.0
+var theta2 := 0.0
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		var hrot := -event.relative.x as float
 		var vrot := -event.relative.y as float
-		$H.rotate_y(hrot * mouse_horizontal_sensitivity * MOUSE_SENSITIVITY_FACTOR)
-		$H/V.rotate_x(vrot * mouse_vertical_sensitivity * MOUSE_SENSITIVITY_FACTOR)
-		$H/V.rotation.x = clamp($H/V.rotation.x, -PI * 0.47, PI * 0.47)
+		match camera_mode:
+			CamModeNormal:
+				$H.rotate_y(hrot * mouse_horizontal_sensitivity * MOUSE_SENSITIVITY_FACTOR)
+				$H/V.rotate_x(vrot * mouse_vertical_sensitivity * MOUSE_SENSITIVITY_FACTOR)
+				$H.rotation.y = fmod($H.rotation.y, PI)
+				$H/V.rotation.x = clamp($H/V.rotation.x, -PI * 0.47, PI * 0.47)
+				# print($H.rotation.y)
+				pass
+			CamModeWallClimb:
+				$H.rotate_y(hrot * mouse_horizontal_sensitivity * MOUSE_SENSITIVITY_FACTOR)
+				$H/V.rotate_x(vrot * mouse_vertical_sensitivity * MOUSE_SENSITIVITY_FACTOR)
+				$H.rotation.y = fmod($H.rotation.y, PI)
+				# print($H.rotation.y)
+				$H/V.rotation.x = clamp($H/V.rotation.x, -PI * 0.47, PI * 0.47)
+				
+				# WTF how is clamping aross horizontal such a hard fucking thing to do?
+				var horizontal_view_dir := -get_hbasis().z
+				wall_normal.y = 0.0
+				wall_normal = wall_normal.normalized()
+				
+				var wall_normal_to_right_angle := Vector3.FORWARD.angle_to(wall_normal)
+				var wall_normal_cross_right_y := -Vector3.FORWARD.z * wall_normal.x + Vector3.FORWARD.x * wall_normal.z # simplified
+				# print(wall_normal_cross_right_y)
+				if wall_normal_cross_right_y < 0:
+					theta1 = PI - wall_normal_to_right_angle + k
+					theta2 = PI - wall_normal_to_right_angle - k
+					pass
+				else:
+					theta1 = -PI + wall_normal_to_right_angle + k
+					theta2 = -PI + wall_normal_to_right_angle - k
+				
+				theta1 = fmod(theta1, PI)
+				theta2 = fmod(theta2, PI)
+				# print(theta1, " ", theta2)
+				if theta1 > theta2:
+					var t = theta1
+					theta1 = theta2
+					theta2 = t
+				if $H.rotation.y > theta1 and $H.rotation.y < theta2:
+					print("clamped")
+				# $H.rotation.y = clamp($H.rotation.y, from, to)
+				pass
 		

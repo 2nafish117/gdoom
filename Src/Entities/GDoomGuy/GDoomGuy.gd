@@ -10,7 +10,6 @@ onready var player_input := $PlayerInput
 onready var camera := $FpCamera
 
 # used by movement abilities
-onready var wall_climb_ray_cast := $WallClimbRayCast
 onready var stair_detection := $StairDetection
 
 # movement abilities
@@ -37,6 +36,10 @@ func on_used_jump_pad(direction: Vector3, force: float):
 		pass
 	linear_velocity = linear_velocity - linear_velocity.project(direction)
 	apply_central_impulse(force * direction)
+
+func on_used_portal():
+	# @TODO
+	pass
 
 func set_global_origin(origin: Vector3) -> void:
 	mode = RigidBody.MODE_KINEMATIC
@@ -90,7 +93,7 @@ func update_contact_indices(state: PhysicsDirectBodyState):
 	wall_contact_indices = []
 	for idx in range(state.get_contact_count()):
 		var normal := state.get_contact_local_normal(idx)
-		var abs_cos_theta := normal.dot(Vector3.UP)
+		var abs_cos_theta := abs(normal.dot(Vector3.UP))
 		if abs_cos_theta >= cos_floor_angle and abs_cos_theta <= 1.0:
 			floor_contact_indices.append(idx)
 		elif abs_cos_theta >= 0.0 and abs_cos_theta < cos_floor_angle:
@@ -112,7 +115,7 @@ func get_best_wall_index() -> int:
 		return -1
 	var wall_index: int = wall_contact_indices[0]
 	for idx in wall_contact_indices:
-		if physics_state.get_contact_local_normal(idx).y < physics_state.get_contact_local_normal(wall_index).y:
+		if abs(physics_state.get_contact_local_normal(idx).y) < abs(physics_state.get_contact_local_normal(wall_index).y):
 			wall_index = idx
 	return wall_index
 
@@ -120,6 +123,10 @@ func _ready() -> void:
 	Dbg.stats.add_stat("hspeed", self, "get_hspeed", true)
 	Dbg.stats.add_stat("vspeed", self, "get_vspeed", true)
 	Dbg.stats.add_stat("speed", self, "get_speed", true)
+	
+	Dbg.stats.add_stat("floor_contact_indices", self, "floor_contact_indices")
+	Dbg.stats.add_stat("wall_contact_indices", self, "wall_contact_indices")
+	
 	Dbg.draw.add_vector3d(self, "linear_velocity", false, 0.05, 4, Color(0,1,0, 0.5))
 	pass
 
